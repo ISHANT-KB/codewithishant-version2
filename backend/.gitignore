@@ -1,0 +1,37 @@
+# virtual environments
+.venv/
+venv/
+env/
+
+# local env
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Python cache / build
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+build/
+dist/
+.eggs/
+*.egg-info/
+
+# local data / logs
+*.db
+*.sqlite3
+*.log
+
+# editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
