@@ -10,6 +10,10 @@ const API_BASE_URL = "http://127.0.0.1:8000";
 function truncateId(value: string) {
   return `${value.slice(0, 8)}...${value.slice(-4)}`;
 }
+function truncateContent(value: string, length = 200) {
+  if (value.length <= length) return value;
+  return `${value.slice(0, length)}...`;
+}
 
 export default function AdminNotesPage() {
   const [title, setTitle] = useState("");
@@ -497,7 +501,7 @@ export default function AdminNotesPage() {
                           isCurrent ? "text-slate-200" : "text-slate-600"
                         }`}
                       >
-                        {note.content}
+                        {truncateContent(note.content)}
                       </p>
 
                       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
