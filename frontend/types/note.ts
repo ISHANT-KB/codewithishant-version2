@@ -4,3 +4,4 @@ export interface Note {
   content: string;
   topic_id: string;
 }
+

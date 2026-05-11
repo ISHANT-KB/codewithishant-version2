@@ -23,8 +23,9 @@ export default function NoteCard({ note, index }: Props) {
       </h3>
       <div className="text-[11px] text-ink-faint leading-relaxed
                       line-clamp-3 tracking-[0.02em]">
-        <MarkdownRenderer content={note.content} />
+        <MarkdownRenderer content={note.content} truncate={true} />
       </div>
+
       <span className="absolute top-5 right-5 text-sm text-warm-border-dark
                        group-hover:translate-x-[3px] group-hover:-translate-y-[3px]
                        group-hover:text-gold transition-all duration-200">

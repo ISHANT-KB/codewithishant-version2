@@ -6,8 +6,12 @@ import {
   DM_Mono,
   Playfair_Display,
   Space_Mono,
-  Syne,
-} from "next/font/google";
+  Syne, Geist, Noto_Sans } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const playfairDisplayHeading = Playfair_Display({subsets:['latin'],variable:'--font-heading'});
+
+const notoSans = Noto_Sans({subsets:['latin'],variable:'--font-sans'});
 
 const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
@@ -40,7 +44,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${playfairDisplay.variable} ${dmMono.variable} ${spaceMono.variable} ${syne.variable}`}
+      className={cn(playfairDisplay.variable, dmMono.variable, spaceMono.variable, syne.variable, "font-sans", notoSans.variable, playfairDisplayHeading.variable)}
     >
       <body className="bg-stone-100 text-slate-900 antialiased">
         <Navbar />

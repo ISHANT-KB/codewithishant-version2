@@ -50,6 +50,12 @@ def get_all_notes(db: Session = Depends(get_db)) -> list[Note]:
     return db.query(Note).all()
 
 
+@router.get("/{note_id}", response_model=NoteResponse)
+def get_note(note_id: UUID, db: Session = Depends(get_db)) -> Note:
+    return get_note_or_404(db, note_id)
+
+
+
 @router.put("/{note_id}", response_model=NoteResponse)
 def update_note(
     note_id: UUID,

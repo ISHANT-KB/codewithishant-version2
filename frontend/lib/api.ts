@@ -28,3 +28,15 @@ export const getTopicFull = async (slug: string) => {
 
   throw lastError;
 };
+export const getNotes = async () => {
+  const res = await fetch(`${API_BASE_URL}/notes`);
+  if (!res.ok) throw new Error("Failed to fetch notes");
+  return res.json();
+};
+
+export const getNote = async (id: string) => {
+  const res = await fetch(`${API_BASE_URL}/notes/${id}`);
+  if (!res.ok) throw new Error("Failed to fetch note");
+  return res.json();
+};
+
