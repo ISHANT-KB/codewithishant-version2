@@ -18,15 +18,21 @@ export default async function NotesPage() {
       <header className="flex flex-wrap items-end justify-between gap-6 px-16 pt-16">
         <div>
           <Eyebrow>IshantLearn — Index</Eyebrow>
-          <h1 className="font-display text-[clamp(36px,5vw,64px)] font-bold text-ink
-                         leading-none tracking-[-0.03em] animate-fade-up">
-            All<br /><em className="text-gold not-italic">Notes</em>
+          <h1
+            className="font-display text-[clamp(36px,5vw,64px)] font-bold text-ink
+                         leading-none tracking-[-0.03em] animate-fade-up"
+          >
+            All
+            <br />
+            <em className="text-gold not-italic">Notes</em>
           </h1>
         </div>
-        <div className="mb-1.5 border border-warm-border px-4 py-2
+        <div
+          className="mb-1.5 border border-warm-border px-4 py-2
                         text-[11px] tracking-[0.15em] text-ink-faint whitespace-nowrap
-                        animate-fade-up delay-100">
-          {notes.length.toString().padStart(2, '0')} notes
+                        animate-fade-up delay-100"
+        >
+          {notes.length.toString().padStart(2, "0")} notes
         </div>
       </header>
       <SectionRule className="mx-16 mt-8" />
@@ -45,4 +51,4 @@ export default async function NotesPage() {
       </div>
     </div>
   );
-}
+}
