@@ -1,41 +1,40 @@
 Directory structure:
-└── ishant-kb-codewithishant-v2/
-    ├── README.md
-    ├── APP_FLOW.md
-    ├── ARCHITECTURE.md
-    ├── FEATURE_LOG.md
-    ├── PRD.md
-    ├── TRD.md
+└── ishant-kb-codewithishant-version2/
     ├── backend/
     │   ├── README.md
     │   ├── requirements.txt
-    │   ├── app/
-    │   │   ├── config.py
-    │   │   ├── db.py
-    │   │   ├── main.py
-    │   │   ├── lib/
-    │   │   │   ├── jwt.py
-    │   │   │   ├── security.py
-    │   │   │   └── utils.py
-    │   │   ├── models/
-    │   │   │   ├── __init__.py
-    │   │   │   ├── admin.py
-    │   │   │   ├── note.py
-    │   │   │   └── topic.py
-    │   │   ├── routes/
-    │   │   │   ├── auth.py
-    │   │   │   ├── deps.py
-    │   │   │   ├── note.py
-    │   │   │   └── topic.py
-    │   │   └── schemas/
-    │   │       ├── admin.py
-    │   │       ├── note.py
-    │   │       ├── topic.py
-    │   │       └── topic_full.py
-    │   └── scripts/
-    │       ├── check_notes.py
-    │       ├── create_admin.py
-    │       └── test_api.py
+    │   └── app/
+    │       ├── config.py
+    │       ├── db.py
+    │       ├── main.py
+    │       ├── lib/
+    │       │   ├── jwt.py
+    │       │   ├── security.py
+    │       │   └── utils.py
+    │       ├── models/
+    │       │   ├── __init__.py
+    │       │   ├── admin.py
+    │       │   ├── note.py
+    │       │   └── topic.py
+    │       ├── routes/
+    │       │   ├── auth.py
+    │       │   ├── deps.py
+    │       │   ├── note.py
+    │       │   └── topic.py
+    │       └── schemas/
+    │           ├── admin.py
+    │           ├── note.py
+    │           ├── topic.py
+    │           └── topic_full.py
+    ├── docs/
+    │   ├── README.md
+    │   ├── APP_FLOW.md
+    │   ├── ARCHITECTURE.md
+    │   ├── DIR_STRUCTRUE.md
+    │   ├── FEATURE_LOG.md
+    │   ├── PRD.md
+    │   ├── SUMMARY.md
+    │   └── TRD.md
     ├── frontend/
     │   ├── README.md
     │   ├── components.json
@@ -82,8 +81,6 @@ Directory structure:
     │   │   │   └── Sidebar.tsx
     │   │   ├── notes/
     │   │   │   └── NoteCard.tsx
-    │   │   ├── sections/
-    │   │   │   └── HeroSection.tsx
     │   │   ├── public/
     │   │   │   ├── NotePreviewCard.tsx
     │   │   │   ├── PublicEmptyState.tsx
@@ -91,6 +88,16 @@ Directory structure:
     │   │   │   ├── SectionDivider.tsx
     │   │   │   ├── TopicCard.tsx
     │   │   │   └── TopicListRow.tsx
+    │   │   ├── sections/
+    │   │   │   ├── HeroSection.tsx
+    │   │   │   └── hero/
+    │   │   │       ├── AmbientGlow.tsx
+    │   │   │       ├── AnimatedCounter.tsx
+    │   │   │       ├── CursorGlow.tsx
+    │   │   │       ├── DotGrid.tsx
+    │   │   │       ├── FloatingOrbs.tsx
+    │   │   │       ├── Particles.tsx
+    │   │   │       └── variants.ts
     │   │   ├── topics/
     │   │   │   ├── TopicCard.tsx
     │   │   │   └── TopicRow.tsx
@@ -100,12 +107,19 @@ Directory structure:
     │   │       ├── Eyebrow.tsx
     │   │       ├── IndexBadge.tsx
     │   │       └── SectionRule.tsx
+    │   ├── hooks/
+    │   │   ├── useInViewOnce.ts
+    │   │   └── useMouseParallax.ts
     │   ├── lib/
     │   │   ├── api.ts
     │   │   └── utils.ts
     │   └── types/
     │       ├── note.ts
     │       └── topic.ts
+    ├── scripts/
+    │   ├── check_notes.py
+    │   ├── create_admin.py
+    │   └── test_api.py
     └── .VSCodeCounter/
         └── 2026-05-11_18-53-23/
             ├── details.md
