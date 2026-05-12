@@ -18,7 +18,7 @@ export default function TopicRow({ topic, index }: Props) {
                   `}
       style={{ gridTemplateColumns: "48px 1fr auto" }}
     >
-      <span className="text-[11px] tracking-[0.1em] text-gold text-right z-10">
+      <span className="text-[11px] tracking-widest text-gold text-right z-10">
         {String(index + 1).padStart(2, "0")}
       </span>
 

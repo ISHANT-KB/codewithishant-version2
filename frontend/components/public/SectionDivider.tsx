@@ -10,10 +10,10 @@ export default function SectionDivider({
   accentWidthClassName = "w-20",
 }: SectionDividerProps) {
   return (
-    <div className={cn("relative h-px bg-[#e4dfd5]", className)}>
+    <div className={cn("relative h-px bg-warm-border", className)}>
       <div
         className={cn(
-          "absolute left-0 top-1/2 h-0.5 -translate-y-1/2 bg-[#c8a96e]",
+          "absolute left-0 top-1/2 h-0.5 -translate-y-1/2 bg-gold",
           accentWidthClassName,
         )}
       />

@@ -12,7 +12,7 @@ export default function PublicEmptyState({
   return (
     <div
       className={cn(
-        "border border-[#e4dfd5] px-6 py-20 text-center text-[11px] uppercase tracking-[0.2em] text-[#c8c3bb]",
+        "border border-warm-border px-6 py-20 text-center text-[11px] uppercase tracking-[0.2em] text-ink-ghost",
         className,
       )}
     >

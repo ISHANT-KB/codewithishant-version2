@@ -24,7 +24,7 @@ export default function TopicCard({ topic, index }: Props) {
         {topic.description || "No description available."}
       </p>
       <span className="absolute top-5 right-5 text-base text-warm-border-dark
-                       group-hover:translate-x-[3px] group-hover:-translate-y-[3px]
+                       group-hover:translate-x-0.75 group-hover:-translate-y-0.75
                        group-hover:text-gold transition-all duration-200">
         ↗
       </span>

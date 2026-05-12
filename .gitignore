@@ -39,3 +39,6 @@ coverage/
 *.tsbuildinfo
 .turbo/
 .vercel/
+
+#vscodeCOunter
+.VSCodeCounter/

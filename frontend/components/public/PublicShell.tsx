@@ -13,7 +13,7 @@ export default function PublicShell({
   return (
     <div
       className={cn(
-        "min-h-screen bg-[#faf8f3] font-[family:var(--font-public-mono)] text-[#1a1a18]",
+        "min-h-screen bg-parchment font-(--font-public-mono) text-ink",
         className,
       )}
     >
