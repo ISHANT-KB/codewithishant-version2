@@ -82,6 +82,8 @@ Directory structure:
     │   │   │   └── Sidebar.tsx
     │   │   ├── notes/
     │   │   │   └── NoteCard.tsx
+    │   │   ├── sections/
+    │   │   │   └── HeroSection.tsx
     │   │   ├── public/
     │   │   │   ├── NotePreviewCard.tsx
     │   │   │   ├── PublicEmptyState.tsx
