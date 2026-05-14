@@ -1,4 +1,4 @@
-import BubbleSortVisualizer from "@/components/visualizer/sorting/BubbleSortVisualizer";
+import BubbleSortVisualizer from "./BubbleSortVisualizer";
 
 export default function BubbleSortPage() {
   return (

@@ -8,7 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.topic import Topic
 
-from ..db import Base
+from ..db.session import Base
 
 
 class Note(Base):

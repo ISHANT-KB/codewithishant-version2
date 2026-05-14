@@ -1,4 +1,4 @@
-import BinarySearchVisualizer from "@/components/visualizer/searching/BinarySearchVisualizer";
+import BinarySearchVisualizer from "./BinarySearchVisualizer";
 
 export default function BinarySearchPage() {
   return (

@@ -1,6 +1,4 @@
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import "katex/dist/katex.min.css";
 import {
   DM_Mono,
@@ -46,15 +44,7 @@ export default function RootLayout({
       lang="en"
       className={cn(playfairDisplay.variable, dmMono.variable, spaceMono.variable, syne.variable, "font-sans", notoSans.variable, playfairDisplayHeading.variable)}
     >
-      <body className="bg-stone-100 text-slate-900 antialiased">
-        <Navbar />
-
-        <main className="min-h-screen">
-          {children}
-        </main>
-
-        <Footer />
-      </body>
+      <body className="bg-stone-100 text-slate-900 antialiased">{children}</body>
     </html>
   );
 }

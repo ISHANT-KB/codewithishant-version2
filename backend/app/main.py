@@ -1,11 +1,9 @@
 from fastapi import FastAPI
-
-from app.routes import auth
-from .db import engine, Base
-from . import models
-from .routes import topic, note
-from app.routes import auth
 from fastapi.middleware.cors import CORSMiddleware
+
+from app.api.v1 import auth, note, topic
+from app.db.session import Base, engine
+from app import models
 
 
 app = FastAPI()

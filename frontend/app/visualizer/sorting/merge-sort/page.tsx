@@ -1,4 +1,4 @@
-import MergeSortVisualizer from "@/components/visualizer/sorting/MergeSortVisualizer";
+import MergeSortVisualizer from "./MergeSortVisualizer";
 
 export default function MergeSortPage() {
   return (

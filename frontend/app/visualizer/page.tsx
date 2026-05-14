@@ -1,5 +1,5 @@
 import { algorithmRegistry, categories } from "@/lib/algorithms";
-import { VisualizerCard } from "@/components/visualizer/VisualizerCard";
+import { VisualizerCard } from "./_components/VisualizerCard";
 import { Braces, Sparkles } from "lucide-react";
 
 export default function VisualizerHomePage() {
