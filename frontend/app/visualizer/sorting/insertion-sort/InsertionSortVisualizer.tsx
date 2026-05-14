@@ -19,63 +19,72 @@ import {
   makeRandomValues,
 } from "./constants";
 
-interface BubbleStep {
+interface InsertionStep {
   values: number[];
   active: number[];
-  sortedFrom: number;
+  sortedUntil: number;
   message: string;
 }
 
-function buildBubbleSteps(initial: number[]): BubbleStep[] {
+function buildInsertionSteps(initial: number[]): InsertionStep[] {
   const values = [...initial];
-  const steps: BubbleStep[] = [
+  const steps: InsertionStep[] = [
     {
       values: [...values],
-      active: [],
-      sortedFrom: values.length,
-      message: "Initial array",
+      active: [0],
+      sortedUntil: 0,
+      message: "Initial array — first element is trivially sorted",
     },
   ];
 
-  for (let end = values.length - 1; end > 0; end--) {
-    let swapped = false;
-    for (let i = 0; i < end; i++) {
+  for (let i = 1; i < values.length; i++) {
+    const key = values[i];
+
+    steps.push({
+      values: [...values],
+      active: [i],
+      sortedUntil: i - 1,
+      message: `Select key = ${key} at index ${i}`,
+    });
+
+    let j = i - 1;
+
+    while (j >= 0 && values[j] > key) {
       steps.push({
         values: [...values],
-        active: [i, i + 1],
-        sortedFrom: end + 1,
-        message: `Compare ${values[i]} and ${values[i + 1]}`,
+        active: [j, j + 1],
+        sortedUntil: i - 1,
+        message: `Compare ${values[j]} > ${key} — shift ${values[j]} right`,
       });
 
-      if (values[i] > values[i + 1]) {
-        [values[i], values[i + 1]] = [values[i + 1], values[i]];
-        swapped = true;
-        steps.push({
-          values: [...values],
-          active: [i, i + 1],
-          sortedFrom: end + 1,
-          message: `Swapped ${values[i + 1]} and ${values[i]}`,
-        });
-      }
-    }
+      values[j + 1] = values[j];
+      j -= 1;
 
-    if (!swapped) {
       steps.push({
         values: [...values],
-        active: [],
-        sortedFrom: 0,
-        message: "No swaps — already sorted",
+        active: [j + 1],
+        sortedUntil: i - 1,
+        message: `Shifted — continue scanning`,
       });
-      break;
     }
+
+    values[j + 1] = key;
+
+    steps.push({
+      values: [...values],
+      active: [j + 1],
+      sortedUntil: i,
+      message: `Insert key ${key} at index ${j + 1}`,
+    });
   }
 
   steps.push({
     values: [...values],
     active: [],
-    sortedFrom: 0,
+    sortedUntil: values.length - 1,
     message: "Done",
   });
+
   return steps;
 }
 
@@ -108,18 +117,15 @@ const Bar = memo(function Bar({ value, height, inActive, isSorted }: BarProps) {
   );
 });
 
-export default function BubbleSortVisualizer() {
+export default function InsertionSortVisualizer() {
   const [baseValues, setBaseValues] = useState<number[]>(makeRandomValues);
   const [stepIndex, setStepIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(DEFAULT_SPEED);
 
-  const steps = useMemo(() => buildBubbleSteps(baseValues), [baseValues]);
+  const steps = useMemo(() => buildInsertionSteps(baseValues), [baseValues]);
   const step = steps[stepIndex];
-  const maxValue = useMemo(
-    () => Math.max(...step.values, 1),
-    [step.values]
-  );
+  const maxValue = useMemo(() => Math.max(...step.values, 1), [step.values]);
   const atEnd = stepIndex >= steps.length - 1;
 
   const heights = useMemo(
@@ -235,6 +241,7 @@ export default function BubbleSortVisualizer() {
         >
           New Data
         </button>
+
         <label className="ml-auto flex items-center gap-3 text-[11px] uppercase tracking-[0.12em] text-ink-faint">
           Speed
           <input
@@ -260,7 +267,7 @@ export default function BubbleSortVisualizer() {
             value={value}
             height={heights[index]}
             inActive={step.active.includes(index)}
-            isSorted={index >= step.sortedFrom}
+            isSorted={index <= step.sortedUntil}
           />
         ))}
       </div>

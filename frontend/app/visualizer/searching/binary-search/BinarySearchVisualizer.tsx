@@ -12,7 +12,7 @@ interface BinaryStep {
 }
 
 const ITEM_COUNT = 24;
-const PLAYBACK_MULTIPLIER = 0.5;
+const PLAYBACK_MULTIPLIER = 5;
 
 function makeSortedValues() {
   const base = Array.from({ length: ITEM_COUNT }, () => 5 + Math.floor(Math.random() * 95));

@@ -46,6 +46,22 @@ export const algorithmRegistry: AlgorithmMeta[] = [
     summary: "Divides array recursively and merges sorted halves back together.",
   },
   {
+    id: "insertion-sort",
+    name: "Insertion Sort",
+    category: "sorting",
+    route: "/visualizer/sorting/insertion-sort",
+    complexity: "O(n^2)",
+    summary: "Builds sorted array by inserting each element into correct position.",
+  },
+  {
+    id:"topological-sort",
+    name: "Topological Sort",
+    category: "sorting",
+    route: "/visualizer/sorting/topological-sort",
+    complexity: "O(V+E)",
+    summary: "Orders DAG vertices so each vertex comes before its outgoing edges.",
+  },
+  {
     id: "binary-search",
     name: "Binary Search",
     category: "searching",
@@ -53,4 +69,5 @@ export const algorithmRegistry: AlgorithmMeta[] = [
     complexity: "O(log n)",
     summary: "Repeatedly checks middle value to cut search range in half.",
   },
+
 ];
