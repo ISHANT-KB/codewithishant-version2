@@ -4,6 +4,7 @@ const NAV_LINKS = [
   { href: "/",       label: "Home" },
   { href: "/topics", label: "Topics" },
   { href: "/notes",  label: "Notes" },
+  { href: "/visualizer", label: "Visualizer" },
 ];
 
 export default function Navbar() {

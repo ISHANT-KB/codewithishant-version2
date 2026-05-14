@@ -6,7 +6,7 @@ import {
   DM_Mono,
   Playfair_Display,
   Space_Mono,
-  Syne, Geist, Noto_Sans } from "next/font/google";
+  Syne, Noto_Sans } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 const playfairDisplayHeading = Playfair_Display({subsets:['latin'],variable:'--font-heading'});
