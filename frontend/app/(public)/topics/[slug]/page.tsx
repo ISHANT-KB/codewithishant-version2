@@ -1,6 +1,5 @@
-import { getTopicFull, getTopics } from "@/lib/api";
+import { getTopicFull } from "@/lib/api";
 import { Note } from "@/types/note";
-import Sidebar from "@/components/layout/Sidebar";
 import Eyebrow from "@/components/ui/Eyebrow";
 import SectionDivider from "@/components/ui/SectionDivider";
 import EmptyState from "@/components/ui/EmptyState";
@@ -12,15 +11,13 @@ export default async function TopicPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [data, topics] = await Promise.all([getTopicFull(slug), getTopics()]);
+  const data = await getTopicFull(slug);
   const topic = data.topic;
   const notes: Note[] = data.notes;
 
   return (
-    <div className="flex min-h-screen bg-parchment">
-      <Sidebar topics={topics} currentSlug={topic.slug} />
-
-      <main className="flex-1 min-w-0 px-15 py-14 md:px-16 md:py-14">
+    <div className="bg-parchment">
+      <main className="px-15 py-14 md:px-16 md:py-14">
 
         {/* Topic header */}
         <Eyebrow>Topic</Eyebrow>

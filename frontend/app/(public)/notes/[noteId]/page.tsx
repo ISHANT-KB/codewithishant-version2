@@ -1,5 +1,4 @@
-import { getNote, getTopics } from "@/lib/api";
-import Sidebar from "@/components/layout/Sidebar";
+import { getNote } from "@/lib/api";
 import Eyebrow from "@/components/ui/Eyebrow";
 import SectionDivider from "@/components/ui/SectionDivider";
 import MarkdownRenderer from "@/components/common/MarkdownRenderer";
@@ -12,14 +11,12 @@ export default async function NoteDetailPage({
   params: Promise<{ noteId: string }>;
 }) {
   const { noteId } = await params;
-  const [note, topics] = await Promise.all([getNote(noteId), getTopics()]);
+  const note = await getNote(noteId);
 
 
   return (
-    <div className="flex min-h-screen bg-parchment">
-      <Sidebar topics={topics} currentSlug={""} />
-
-      <main className="flex-1 min-w-0 px-8 py-10 md:px-16 md:py-14">
+    <div className="bg-parchment">
+      <main className="px-8 py-10 md:px-16 md:py-14">
         <Link 
           href="/notes"
           className="inline-flex items-center gap-2 text-[11px] text-ink-faint hover:text-gold transition-colors mb-8 group"

@@ -6,6 +6,9 @@ import {
   Space_Mono,
   Syne, Noto_Sans } from "next/font/google";
 import { cn } from "@/lib/utils";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import Sidebar from "@/components/layout/Sidebar";
 
 const playfairDisplayHeading = Playfair_Display({subsets:['latin'],variable:'--font-heading'});
 
@@ -44,7 +47,16 @@ export default function RootLayout({
       lang="en"
       className={cn(playfairDisplay.variable, dmMono.variable, spaceMono.variable, syne.variable, "font-sans", notoSans.variable, playfairDisplayHeading.variable)}
     >
-      <body className="bg-stone-100 text-slate-900 antialiased">{children}</body>
+      <body className="bg-stone-100 text-slate-900 antialiased">
+        <div className="min-h-screen bg-parchment">
+          <Navbar />
+          <div className="flex min-h-[calc(100vh-4rem)]">
+            <Sidebar />
+            <main className="flex-1 min-w-0">{children}</main>
+          </div>
+          <Footer />
+        </div>
+      </body>
     </html>
   );
 }
