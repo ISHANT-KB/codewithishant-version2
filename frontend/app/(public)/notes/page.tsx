@@ -15,7 +15,7 @@ export default async function NotesPage() {
 
   return (
     <div className="min-h-screen bg-parchment">
-      <header className="flex flex-wrap items-end justify-between gap-6 px-16 pt-16">
+      <header className="flex flex-wrap items-end justify-between gap-6 px-6 md:px-16 pt-16">
         <div>
           <Eyebrow>IshantLearn — Index</Eyebrow>
           <h1
@@ -35,8 +35,8 @@ export default async function NotesPage() {
           {notes.length.toString().padStart(2, "0")} notes
         </div>
       </header>
-      <SectionDivider className="mx-16 mt-8" />
-      <div className="px-16 pb-20">
+      <SectionDivider className="mx-6 md:mx-16 mt-8" />
+      <div className="px-6 md:px-16 pb-20">
         {notes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border-l border-t border-warm-border mt-10">
             {notes.map((note, index) => (

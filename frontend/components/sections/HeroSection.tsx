@@ -24,7 +24,7 @@ export default function HeroSection({
   shimmer = true,
 }: HeroSectionProps) {
   return (
-    <section className="relative overflow-hidden px-16 pt-20 pb-16 border-b border-warm-border bg-linear-to-b from-stone-100 to-stone-50">
+    <section className="relative overflow-hidden px-6 md:px-16 pt-20 pb-16 border-b border-warm-border bg-linear-to-b from-stone-100 to-stone-50">
       <style>{`
         @keyframes heroFadeUp {
           from { opacity: 0; transform: translateY(18px); }

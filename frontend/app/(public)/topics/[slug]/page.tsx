@@ -17,7 +17,7 @@ export default async function TopicPage({
 
   return (
     <div className="bg-parchment">
-      <main className="px-15 py-14 md:px-16 md:py-14">
+      <main className="px-6 py-14 md:px-16 md:py-14">
 
         {/* Topic header */}
         <Eyebrow>Topic</Eyebrow>

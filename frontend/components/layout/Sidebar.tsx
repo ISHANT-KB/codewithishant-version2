@@ -191,7 +191,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="w-64 shrink-0 sticky top-16 h-[calc(100vh-4rem)] flex flex-col
+      className="w-64 shrink-0 sticky top-16 h-[calc(100vh-4rem)] hidden lg:flex flex-col
                  bg-parchment border-r border-warm-border overflow-hidden"
     >
       <div

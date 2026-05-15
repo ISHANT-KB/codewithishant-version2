@@ -11,7 +11,8 @@ export const ROUTES = {
     notes: "/admin/notes",
     topics: "/admin/topic",
     login: "/admin/login",
-  }
+  },
+  ADMIN_LOGIN: "/admin/login",
 } as const;
 
 export const STORAGE_KEYS = {

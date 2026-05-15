@@ -24,7 +24,7 @@ export default async function Home() {
         count={topics.length}
       />
 
-      <section className="px-6 pb-16 pt-12 sm:px-10 lg:px-16">
+      <section className="px-6 pb-16 pt-12 sm:px-10 md:px-16">
         <div className="mb-9 flex items-baseline gap-4">
           <span className="text-[11px] uppercase tracking-[0.25em] text-ink-muted">All Topics</span>
           <span className="text-[11px] text-gold">x{topics.length}</span>
@@ -42,7 +42,7 @@ export default async function Home() {
         )}
       </section>
 
-      <section className="border-t border-warm-border px-6 pb-20 pt-12 sm:px-10 lg:px-16">
+      <section className="border-t border-warm-border px-6 pb-20 pt-12 sm:px-10 md:px-16">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-[11px] uppercase tracking-[0.25em] text-ink-muted">Visualizer Lab</p>

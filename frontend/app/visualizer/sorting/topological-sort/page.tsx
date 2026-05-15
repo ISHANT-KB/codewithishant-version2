@@ -3,7 +3,7 @@ import TopologicalSortVisualizer from "./TopologicalSortVisualizer";
 export default function TopologicalSortPage() {
   return (
     <div className="min-h-screen bg-parchment">
-      <header className="flex flex-wrap items-end justify-between gap-6 px-16 pt-16">
+      <header className="flex flex-wrap items-end justify-between gap-6 px-6 md:px-16 pt-16">
         <div>
           <p className="text-[11px] uppercase tracking-[0.2em] text-ink-faint">
             Graph Algorithms
@@ -25,9 +25,9 @@ export default function TopologicalSortPage() {
         </div>
       </header>
 
-      <div className="mx-16 mt-8 h-px bg-warm-border" />
+      <div className="mx-6 md:mx-16 mt-8 h-px bg-warm-border" />
 
-      <div className="px-16 pb-20 pt-10">
+      <div className="px-6 md:px-16 pb-20 pt-10">
         <p className="max-w-2xl text-sm leading-relaxed text-ink-muted mb-10">
           Topological sort orders the nodes of a directed acyclic graph such that
           for every edge u → v, node u comes before v. The visualizer uses DFS with

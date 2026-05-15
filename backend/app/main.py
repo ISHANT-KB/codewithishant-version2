@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1 import auth, note, topic
+from app.api.v1 import auth, note, topic, cheatsheet
 from app.db.session import Base, engine
 from app import models
 
@@ -24,6 +24,7 @@ Base.metadata.create_all(bind=engine)
 
 app.include_router(topic.router)
 app.include_router(note.router)
+app.include_router(cheatsheet.router)
 app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
 
 

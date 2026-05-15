@@ -12,7 +12,7 @@ export default async function TopicsPage() {
     <div className="min-h-screen bg-parchment">
 
       {/* Header */}
-      <header className="flex flex-wrap items-end justify-between gap-6 px-16 pt-16">
+      <header className="flex flex-wrap items-end justify-between gap-6 px-6 md:px-16 pt-16">
         <div>
           <Eyebrow>IshantLearn — Index</Eyebrow>
           <h1 className="font-display text-[clamp(36px,5vw,64px)] font-bold text-ink
@@ -27,10 +27,10 @@ export default async function TopicsPage() {
         </div>
       </header>
 
-      <SectionDivider className="mx-16 mt-8" />
+      <SectionDivider className="mx-6 md:mx-16 mt-8" />
 
       {/* List */}
-      <div className="px-16 pb-20">
+      <div className="px-6 md:px-16 pb-20">
         {topics.length === 0 ? (
           <EmptyState message="No topics yet." />
         ) : (
