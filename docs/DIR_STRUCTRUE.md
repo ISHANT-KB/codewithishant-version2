@@ -1,5 +1,6 @@
 Directory structure:
-└── ishant-kb-codewithishant-v2/
+└── ishant-kb-codewithishant-version2/
+    ├── implementation_plan.md
     ├── package.json
     ├── backend/
     │   ├── README.md
@@ -13,6 +14,7 @@ Directory structure:
     │       │   └── v1/
     │       │       ├── __init__.py
     │       │       ├── auth.py
+    │       │       ├── cheatsheet.py
     │       │       ├── note.py
     │       │       └── topic.py
     │       ├── core/
@@ -26,15 +28,18 @@ Directory structure:
     │       ├── models/
     │       │   ├── __init__.py
     │       │   ├── admin.py
+    │       │   ├── cheatsheet.py
     │       │   ├── note.py
     │       │   └── topic.py
     │       ├── schemas/
     │       │   ├── admin.py
+    │       │   ├── cheatsheet.py
     │       │   ├── note.py
     │       │   ├── topic.py
     │       │   └── topic_full.py
     │       └── services/
     │           ├── __init__.py
+    │           ├── cheatsheet.py
     │           ├── note.py
     │           └── topic.py
     ├── docs/
@@ -75,6 +80,10 @@ Directory structure:
     │   │   ├── (public)/
     │   │   │   ├── layout.tsx
     │   │   │   ├── page.tsx
+    │   │   │   ├── cheatsheets/
+    │   │   │   │   ├── page.tsx
+    │   │   │   │   └── [slug]/
+    │   │   │   │       └── page.tsx
     │   │   │   ├── notes/
     │   │   │   │   ├── page.tsx
     │   │   │   │   ├── [noteId]/
@@ -103,15 +112,25 @@ Directory structure:
     │   │           │   ├── BubbleSortVisualizer.tsx
     │   │           │   ├── constants.ts
     │   │           │   └── page.tsx
-    │   │           └── merge-sort/
+    │   │           ├── insertion-sort/
+    │   │           │   ├── constants.ts
+    │   │           │   ├── InsertionSortVisualizer.tsx
+    │   │           │   └── page.tsx
+    │   │           ├── merge-sort/
+    │   │           │   ├── constants.ts
+    │   │           │   ├── MergeSortVisualizer.tsx
+    │   │           │   └── page.tsx
+    │   │           └── topological-sort/
     │   │               ├── constants.ts
-    │   │               ├── MergeSortVisualizer.tsx
-    │   │               └── page.tsx
+    │   │               ├── page.tsx
+    │   │               └── TopologicalSortVisualizer.tsx
     │   ├── components/
     │   │   ├── common/
     │   │   │   ├── BrandMark.tsx
     │   │   │   └── MarkdownRenderer.tsx
     │   │   ├── features/
+    │   │   │   ├── cheatsheets/
+    │   │   │   │   └── CheatsheetCard.tsx
     │   │   │   ├── notes/
     │   │   │   │   ├── NoteCard.tsx
     │   │   │   │   └── NotePreviewCard.tsx
@@ -150,6 +169,7 @@ Directory structure:
     │   │   ├── utils.ts
     │   │   └── api/
     │   │       ├── auth.ts
+    │   │       ├── cheatsheets.ts
     │   │       ├── client.ts
     │   │       ├── index.ts
     │   │       ├── notes.ts
@@ -158,6 +178,7 @@ Directory structure:
     │   │   ├── auth.ts
     │   │   └── ui.ts
     │   └── types/
+    │       ├── cheatsheet.ts
     │       ├── note.ts
     │       └── topic.ts
     ├── scripts/
