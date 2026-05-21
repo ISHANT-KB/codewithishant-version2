@@ -1,21 +1,33 @@
-from fastapi import Depends, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jose import jwt, JWTError
-from app.config import JWT_SECRET, JWT_ALGORITHM
+from fastapi import Depends, HTTPException, Cookie
+from jose import JWTError
+from app.core.jwt import decode_token
+from app.db.session import get_db
+from app.models.token_blacklist import TokenBlacklist
+from sqlalchemy.orm import Session
 
-security = HTTPBearer()
+# ── cookie-based extraction (no more Bearer header) ──────────────────────────
 
-def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    token = credentials.credentials
+def get_current_admin(
+    access_token: str | None = Cookie(default=None),
+    db: Session = Depends(get_db),
+):
+    if not access_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
 
     try:
-        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        role = payload.get("role")
-
-        if role != "admin":
-            raise HTTPException(status_code=403, detail="Not authorized")
-
-        return payload
-
+        payload = decode_token(access_token)
     except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    # check token not revoked
+    jti = payload.get("jti")
+    if jti and db.query(TokenBlacklist).filter_by(jti=jti).first():
+        raise HTTPException(status_code=401, detail="Token revoked")
+
+    if payload.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    if payload.get("type") != "access":
+        raise HTTPException(status_code=401, detail="Wrong token type")
+
+    return payload
