@@ -9,6 +9,7 @@ from app.api.v1 import auth, note, topic, cheatsheet
 from app.db.session import Base, engine
 from app.config import settings
 from app import models
+from app.api.v1 import blog
 
 # ── rate limiter ──────────────────────────────────────────────────────────────
 limiter = Limiter(key_func=get_remote_address, default_limits=["200/minute"])
@@ -49,6 +50,7 @@ app.include_router(topic.router)
 app.include_router(note.router)
 app.include_router(cheatsheet.router)
 app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
+app.include_router(blog.router, prefix="/api", tags=["Blogs"])
 
 
 @app.get("/")

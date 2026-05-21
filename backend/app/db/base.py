@@ -7,3 +7,4 @@ from app.models.note import Note  # noqa: F401
 from app.models.cheatsheet import Cheatsheet  # noqa: F401
 # from app.models.blog import Blog  # noqa: F401
 from app.models.token_blacklist import TokenBlacklist  # noqa: F401
+from app.models.blog import Blog  # noqa: F401
