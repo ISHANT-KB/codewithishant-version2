@@ -9,7 +9,7 @@ from app.schemas.topic import TopicCreate, TopicResponse, TopicUpdate
 from app.schemas.note import NoteResponse
 from app.schemas.topic_full import TopicFullResponse
 from app.services import topic as topic_service
-from app.api.deps import get_current_admin
+from app.api.deps import get_current_admin, require_csrf
 from app.core.sanitize import sanitize_markdown, sanitize_plain
 
 router = APIRouter(prefix="/topics", tags=["Topics"])
@@ -29,7 +29,7 @@ def _sanitize_update(topic: TopicUpdate) -> TopicUpdate:
     return topic
 
 
-@router.post("/", response_model=TopicResponse)
+@router.post("/", response_model=TopicResponse, dependencies=[Depends(require_csrf)])
 def create_topic(
     topic: TopicCreate,
     db: Session = Depends(get_db),
@@ -43,7 +43,7 @@ def get_topics(db: Session = Depends(get_db)):
     return topic_service.get_topics(db)
 
 
-@router.put("/{topic_id}", response_model=TopicResponse)
+@router.put("/{topic_id}", response_model=TopicResponse, dependencies=[Depends(require_csrf)])
 def update_topic(
     topic_id: UUID,
     topic_data: TopicUpdate,
@@ -53,7 +53,7 @@ def update_topic(
     return topic_service.update_topic(db, topic_id, _sanitize_update(topic_data))
 
 
-@router.delete("/{topic_id}")
+@router.delete("/{topic_id}", dependencies=[Depends(require_csrf)])
 def delete_topic(
     topic_id: UUID,
     db: Session = Depends(get_db),

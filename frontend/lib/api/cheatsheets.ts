@@ -2,7 +2,7 @@ import { API_BASE_URL, getJson } from "./client";
 import { Cheatsheet } from "@/types/cheatsheet";
 
 export const getCheatsheets = async (): Promise<Cheatsheet[]> => {
-  return getJson("/cheatsheets", "Failed to fetch cheatsheets");
+  return getJson<Cheatsheet[]>("/cheatsheets", "Failed to fetch cheatsheets");
 };
 
 export const getCheatsheet = async (slug: string): Promise<Cheatsheet> => {

@@ -7,6 +7,19 @@ interface AdminLoginPayload {
   password: string;
 }
 
+function getLoginErrorMessage(error: unknown): string {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "detail" in error &&
+    typeof error.detail === "string"
+  ) {
+    return error.detail;
+  }
+
+  return "Login failed";
+}
+
 export async function adminLogin(payload: AdminLoginPayload): Promise<void> {
   const res = await fetch(`${API_BASE_URL}/api/auth/admin-login`, {
     method: "POST",
@@ -17,7 +30,7 @@ export async function adminLogin(payload: AdminLoginPayload): Promise<void> {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error((err as any).detail ?? "Login failed");
+    throw new Error(getLoginErrorMessage(err));
   }
 }
 

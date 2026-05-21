@@ -1,6 +1,7 @@
-from fastapi import Depends, HTTPException, Cookie
+from fastapi import Depends, HTTPException, Cookie, Header
 from jose import JWTError
 from app.core.jwt import decode_token
+from app.core.csrf import verify_csrf_token
 from app.db.session import get_db
 from app.models.token_blacklist import TokenBlacklist
 from sqlalchemy.orm import Session
@@ -31,3 +32,15 @@ def get_current_admin(
         raise HTTPException(status_code=401, detail="Wrong token type")
 
     return payload
+
+
+# ── CSRF double-submit cookie check ──────────────────────────────────────────
+
+def require_csrf(
+    csrf_cookie: str | None = Cookie(default=None, alias="csrf_token"),
+    x_csrf_token: str | None = Header(default=None, alias="x-csrf-token"),
+) -> None:
+    if not csrf_cookie or not x_csrf_token:
+        raise HTTPException(status_code=403, detail="CSRF token missing")
+    if not verify_csrf_token(csrf_cookie, x_csrf_token):
+        raise HTTPException(status_code=403, detail="CSRF token invalid")

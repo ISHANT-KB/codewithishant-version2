@@ -5,7 +5,7 @@ from uuid import UUID
 from app.db.session import get_db
 from app.schemas.note import NoteCreate, NoteResponse, NoteUpdate
 from app.services import note as note_service
-from app.api.deps import get_current_admin
+from app.api.deps import get_current_admin, require_csrf
 from app.core.sanitize import sanitize_markdown, sanitize_plain
 
 router = APIRouter(prefix="/notes", tags=["Notes"])
@@ -23,7 +23,7 @@ def _sanitize_note_update(note: NoteUpdate) -> NoteUpdate:
     return note
 
 
-@router.post("/", response_model=NoteResponse)
+@router.post("/", response_model=NoteResponse, dependencies=[Depends(require_csrf)])
 def create_note(
     note: NoteCreate,
     db: Session = Depends(get_db),
@@ -42,7 +42,7 @@ def get_note(note_id: UUID, db: Session = Depends(get_db)):
     return note_service.get_note(db, note_id)
 
 
-@router.put("/{note_id}", response_model=NoteResponse)
+@router.put("/{note_id}", response_model=NoteResponse, dependencies=[Depends(require_csrf)])
 def update_note(
     note_id: UUID,
     note_data: NoteUpdate,
@@ -52,7 +52,7 @@ def update_note(
     return note_service.update_note(db, note_id, _sanitize_note_update(note_data))
 
 
-@router.delete("/{note_id}")
+@router.delete("/{note_id}", dependencies=[Depends(require_csrf)])
 def delete_note(
     note_id: UUID,
     db: Session = Depends(get_db),

@@ -6,7 +6,7 @@ from typing import List
 from app.db.session import get_db
 from app.schemas.blog import BlogCreate, BlogUpdate, BlogResponse, BlogListResponse
 from app.services import blog as blog_service
-from app.api.deps import get_current_admin
+from app.api.deps import get_current_admin, require_csrf
 from app.core.sanitize import sanitize_markdown, sanitize_plain
 
 router = APIRouter(prefix="/blogs", tags=["Blogs"])
@@ -50,7 +50,7 @@ def list_all_blogs(
     return blog_service.get_all_blogs(db, published_only=False)
 
 
-@router.post("/", response_model=BlogResponse)
+@router.post("/", response_model=BlogResponse, dependencies=[Depends(require_csrf)])
 def create_blog(
     payload: BlogCreate,
     db: Session = Depends(get_db),
@@ -59,7 +59,7 @@ def create_blog(
     return blog_service.create_blog(db, _sanitize_create(payload))
 
 
-@router.put("/{blog_id}", response_model=BlogResponse)
+@router.put("/{blog_id}", response_model=BlogResponse, dependencies=[Depends(require_csrf)])
 def update_blog(
     blog_id: UUID,
     payload: BlogUpdate,
@@ -69,7 +69,7 @@ def update_blog(
     return blog_service.update_blog(db, blog_id, _sanitize_update(payload))
 
 
-@router.delete("/{blog_id}")
+@router.delete("/{blog_id}", dependencies=[Depends(require_csrf)])
 def delete_blog(
     blog_id: UUID,
     db: Session = Depends(get_db),

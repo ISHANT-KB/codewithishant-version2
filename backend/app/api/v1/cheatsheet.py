@@ -5,7 +5,7 @@ from typing import List
 from app.db.session import get_db
 from app.schemas.cheatsheet import CheatsheetCreate, CheatsheetUpdate, CheatsheetResponse
 from app.services import cheatsheet as cheatsheet_service
-from app.api.deps import get_current_admin
+from app.api.deps import get_current_admin, require_csrf
 from app.core.sanitize import sanitize_markdown, sanitize_plain
 
 router = APIRouter(prefix="/cheatsheets", tags=["Cheatsheets"])
@@ -35,7 +35,7 @@ def get_cheatsheet(slug: str, db: Session = Depends(get_db)):
     return cheatsheet_service.get_cheatsheet_by_slug(db, slug)
 
 
-@router.post("/", response_model=CheatsheetResponse)
+@router.post("/", response_model=CheatsheetResponse, dependencies=[Depends(require_csrf)])
 def create_cheatsheet(
     payload: CheatsheetCreate,
     db: Session = Depends(get_db),
@@ -44,7 +44,7 @@ def create_cheatsheet(
     return cheatsheet_service.create_cheatsheet(db, _sanitize_create(payload))
 
 
-@router.put("/{slug}", response_model=CheatsheetResponse)
+@router.put("/{slug}", response_model=CheatsheetResponse, dependencies=[Depends(require_csrf)])
 def update_cheatsheet(
     slug: str,
     payload: CheatsheetUpdate,
@@ -54,7 +54,7 @@ def update_cheatsheet(
     return cheatsheet_service.update_cheatsheet(db, slug, _sanitize_update(payload))
 
 
-@router.delete("/{slug}")
+@router.delete("/{slug}", dependencies=[Depends(require_csrf)])
 def delete_cheatsheet(
     slug: str,
     db: Session = Depends(get_db),

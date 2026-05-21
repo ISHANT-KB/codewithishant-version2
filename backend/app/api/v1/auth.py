@@ -9,6 +9,7 @@ from app.db.session import get_db
 from app.models.admin import Admin
 from app.models.token_blacklist import TokenBlacklist
 from app.core.security import verify_password
+from app.core.csrf import generate_csrf_token
 from app.core.jwt import (
     create_access_token,
     create_refresh_token,
@@ -57,6 +58,15 @@ def admin_login(request: Request, data: AdminLogin, response: Response, db: Sess
         samesite=settings.COOKIE_SAMESITE,
         path="/",
     )
+    response.set_cookie(
+        key="csrf_token",
+        value=generate_csrf_token(),
+        max_age=15 * 60,
+        httponly=False,                  # JS must read this
+        secure=settings.COOKIE_SECURE,
+        samesite=settings.COOKIE_SAMESITE,
+        path="/",
+    )
 
     return {"message": "Login successful"}   # NO token in body
 
@@ -92,6 +102,15 @@ def refresh(
         samesite=settings.COOKIE_SAMESITE,
         path="/",
     )
+    response.set_cookie(
+        key="csrf_token",
+        value=generate_csrf_token(),
+        max_age=15 * 60,
+        httponly=False,                  # JS must read this
+        secure=settings.COOKIE_SECURE,
+        samesite=settings.COOKIE_SAMESITE,
+        path="/",
+    )
     return {"message": "Token refreshed"}
 
 
@@ -115,4 +134,5 @@ def logout(
 
     response.delete_cookie("access_token")
     response.delete_cookie("refresh_token")
+    response.delete_cookie("csrf_token")
     return {"message": "Logged out"}

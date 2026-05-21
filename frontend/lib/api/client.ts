@@ -3,17 +3,64 @@ import { refreshToken } from "./auth";
 
 export const API_BASE_URL = API_BASE_URL_CONST;
 
+type ErrorResponse = {
+  detail?: unknown;
+};
+
+function hasStringDetail(error: unknown): error is { detail: string } {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "detail" in error &&
+    typeof (error as ErrorResponse).detail === "string"
+  );
+}
+
+function getErrorMessage(error: unknown): string {
+  if (hasStringDetail(error)) {
+    return error.detail;
+  }
+
+  return "Request failed";
+}
+
+function getCsrfToken(): string | null {
+  return (
+    document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("csrf_token="))
+      ?.split("=")[1] ?? null
+  );
+}
+
 async function fetchWithAuth(
   input: RequestInfo,
   init: RequestInit = {},
 ): Promise<Response> {
-  const res = await fetch(input, { ...init, credentials: "include" });
+  const csrfToken = getCsrfToken();
+
+  const headers: Record<string, string> = {
+    ...(init.headers as Record<string, string>),
+    ...(csrfToken ? { "x-csrf-token": csrfToken } : {}),
+  };
+
+  const res = await fetch(input, { ...init, headers, credentials: "include" });
 
   if (res.status === 401) {
     // try silent refresh once
     const refreshed = await refreshToken();
     if (refreshed) {
-      return fetch(input, { ...init, credentials: "include" });
+      // re-read — refresh endpoint issues a new csrf_token cookie
+      const newCsrf = getCsrfToken();
+      const retryHeaders: Record<string, string> = {
+        ...(init.headers as Record<string, string>),
+        ...(newCsrf ? { "x-csrf-token": newCsrf } : {}),
+      };
+      return fetch(input, {
+        ...init,
+        headers: retryHeaders,
+        credentials: "include",
+      });
     }
     // refresh failed → redirect to login
     window.location.href = "/admin/login";
@@ -22,7 +69,7 @@ async function fetchWithAuth(
   return res;
 }
 
-export async function getJson<T = any>(
+export async function getJson<T = unknown>(
   path: string,
   errorMessage: string,
 ): Promise<T> {
@@ -31,7 +78,7 @@ export async function getJson<T = any>(
   return res.json() as Promise<T>;
 }
 
-export async function postJson<T = any>(
+export async function postJson<T = unknown>(
   path: string,
   body: unknown,
 ): Promise<T> {
@@ -42,7 +89,7 @@ export async function postJson<T = any>(
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error((err as any).detail ?? "Request failed");
+    throw new Error(getErrorMessage(err));
   }
   return res.json() as Promise<T>;
 }

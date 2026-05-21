@@ -1,10 +1,17 @@
 import { API_BASE_URL, getJson } from "./client";
+import { Note } from "@/types/note";
+import { Topic } from "@/types/topic";
 
-export const getTopics = async () => {
-  return getJson("/topics", "Failed to fetch topics");
+type TopicFullResponse = {
+  topic: Topic;
+  notes: Note[];
 };
 
-export const getTopicFull = async (slug: string) => {
+export const getTopics = async (): Promise<Topic[]> => {
+  return getJson<Topic[]>("/topics", "Failed to fetch topics");
+};
+
+export const getTopicFull = async (slug: string): Promise<TopicFullResponse> => {
   const urls = [`/topics/${slug}/full`, `/topics/${slug}`];
   let lastError = new Error("Failed to fetch topic");
 
@@ -13,7 +20,7 @@ export const getTopicFull = async (slug: string) => {
     try {
       const res = await fetch(url);
       if (res.ok) {
-        return res.json();
+        return res.json() as Promise<TopicFullResponse>;
       }
       lastError = new Error(
         `Failed to fetch topic from ${url}: ${res.status} ${res.statusText}`,
