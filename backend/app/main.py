@@ -1,15 +1,18 @@
+from datetime import datetime, timezone, timedelta
+
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
+from apscheduler.schedulers.background import BackgroundScheduler
 
-from app.api.v1 import auth, note, topic, cheatsheet
-from app.db.session import Base, engine
+from app.api.v1 import auth, note, topic, cheatsheet, blog
+from app.db.session import Base, engine, SessionLocal
+from app.models.token_blacklist import TokenBlacklist
 from app.config import settings
 from app import models
-from app.api.v1 import blog
 
 # ── rate limiter ──────────────────────────────────────────────────────────────
 limiter = Limiter(key_func=get_remote_address, default_limits=["200/minute"])
@@ -30,16 +33,16 @@ app.add_middleware(SlowAPIMiddleware)
 
 # ── CORS — strict, no wildcard ────────────────────────────────────────────────
 ALLOWED_ORIGINS = [
-    "http://localhost:3000",       # local dev
-    "https://codewithishant.com",  # ← replace with your real domain
+    "http://localhost:3000",
+    "https://codewithishant.com",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,   # NOT "*"
-    allow_credentials=True,          # needed for httpOnly cookies
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
+    allow_headers=["Content-Type", "Authorization", "x-csrf-token"],
 )
 
 # ── DB ────────────────────────────────────────────────────────────────────────
@@ -51,6 +54,42 @@ app.include_router(note.router)
 app.include_router(cheatsheet.router)
 app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
 app.include_router(blog.router, prefix="/api", tags=["Blogs"])
+
+
+# ── blacklist cron ────────────────────────────────────────────────────────────
+def purge_expired_jtis() -> None:
+    """Delete blacklisted JTIs whose expires_at has passed."""
+    db = SessionLocal()
+    try:
+        now = datetime.now(timezone.utc)
+        deleted = (
+            db.query(TokenBlacklist)
+            .filter(TokenBlacklist.expires_at < now)
+            .delete(synchronize_session=False)
+        )
+        db.commit()
+        if deleted:
+            print(f"[cron] purged {deleted} expired JTI(s)")
+    except Exception as e:
+        db.rollback()
+        print(f"[cron] purge failed: {e}")
+    finally:
+        db.close()
+
+
+scheduler = BackgroundScheduler(timezone="UTC")
+scheduler.add_job(purge_expired_jtis, trigger="interval", hours=24, id="purge_jtis")
+
+
+@app.on_event("startup")
+def startup() -> None:
+    scheduler.start()
+    purge_expired_jtis()  # run once immediately on boot
+
+
+@app.on_event("shutdown")
+def shutdown() -> None:
+    scheduler.shutdown(wait=False)
 
 
 @app.get("/")

@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, HTTPException, Depends, Response, Cookie, Request
 from sqlalchemy.orm import Session
 from jose import JWTError
@@ -127,7 +128,10 @@ def logout(
             payload = decode_access_token(access_token)
             jti = payload.get("jti")
             if jti:
-                db.add(TokenBlacklist(jti=jti))
+                db.add(TokenBlacklist(
+                    jti=jti,
+                    expires_at=datetime.now(timezone.utc) + timedelta(days=7),
+                ))
                 db.commit()
         except JWTError:
             pass  # already invalid, still clear cookies
