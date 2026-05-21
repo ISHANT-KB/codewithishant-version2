@@ -1,4 +1,5 @@
-from jose import jwt, JWTError
+import jwt
+from jwt.exceptions import InvalidTokenError as JWTError  # drop-in alias for jose.JWTError
 from datetime import datetime, timedelta, timezone
 from app.config import settings
 

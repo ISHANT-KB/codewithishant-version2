@@ -38,18 +38,20 @@ const nextConfig: NextConfig = {
               ]),
 
           // ── CSP ────────────────────────────────────────────────────────
-          // Adjust script-src / style-src if you add 3rd party CDNs
           {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
               isDev
-                ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'"  // Next.js HMR needs this in dev
+                ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'"
                 : "script-src 'self'",
-              "style-src 'self' 'unsafe-inline'",   // Tailwind inline styles need this
+              "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob:",
               "font-src 'self'",
-              "connect-src 'self'",
+              // dev: allow localhost backend; prod: allow your real domain
+              isDev
+                ? "connect-src 'self' http://localhost:8000"
+                : "connect-src 'self' https://api.codewithishant.com",
               "frame-src 'none'",
               "object-src 'none'",
               "base-uri 'self'",

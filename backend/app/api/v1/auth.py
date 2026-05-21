@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, HTTPException, Depends, Response, Cookie, Request
 from sqlalchemy.orm import Session
-from jose import JWTError
+from jwt.exceptions import InvalidTokenError as JWTError
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 

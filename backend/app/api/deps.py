@@ -1,5 +1,5 @@
 from fastapi import Depends, HTTPException, Cookie, Header, Request
-from jose import JWTError
+from jwt.exceptions import InvalidTokenError as JWTError
 from app.core.jwt import decode_token
 from app.core.csrf import verify_csrf_token
 from app.db.session import get_db
