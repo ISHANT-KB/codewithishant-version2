@@ -5,7 +5,8 @@ from typing import List
 from app.db.session import get_db
 from app.schemas.cheatsheet import CheatsheetCreate, CheatsheetUpdate, CheatsheetResponse
 from app.services import cheatsheet as cheatsheet_service
-from app.api.deps import get_current_admin, require_csrf
+from app.services import audit as audit_service
+from app.api.deps import get_current_admin, require_csrf, get_admin_email
 from app.core.sanitize import sanitize_markdown, sanitize_plain
 
 router = APIRouter(prefix="/cheatsheets", tags=["Cheatsheets"])
@@ -40,8 +41,13 @@ def create_cheatsheet(
     payload: CheatsheetCreate,
     db: Session = Depends(get_db),
     _admin=Depends(get_current_admin),
+    admin_email: str = Depends(get_admin_email),
 ):
-    return cheatsheet_service.create_cheatsheet(db, _sanitize_create(payload))
+    result = cheatsheet_service.create_cheatsheet(db, _sanitize_create(payload))
+    audit_service.log(db, admin_email=admin_email, action="CREATE",
+                      resource_type="cheatsheet", resource_id=result.slug,
+                      detail=result.title)
+    return result
 
 
 @router.put("/{slug}", response_model=CheatsheetResponse, dependencies=[Depends(require_csrf)])
@@ -50,8 +56,12 @@ def update_cheatsheet(
     payload: CheatsheetUpdate,
     db: Session = Depends(get_db),
     _admin=Depends(get_current_admin),
+    admin_email: str = Depends(get_admin_email),
 ):
-    return cheatsheet_service.update_cheatsheet(db, slug, _sanitize_update(payload))
+    result = cheatsheet_service.update_cheatsheet(db, slug, _sanitize_update(payload))
+    audit_service.log(db, admin_email=admin_email, action="UPDATE",
+                      resource_type="cheatsheet", resource_id=slug)
+    return result
 
 
 @router.delete("/{slug}", dependencies=[Depends(require_csrf)])
@@ -59,5 +69,9 @@ def delete_cheatsheet(
     slug: str,
     db: Session = Depends(get_db),
     _admin=Depends(get_current_admin),
+    admin_email: str = Depends(get_admin_email),
 ):
-    return cheatsheet_service.delete_cheatsheet(db, slug)
+    result = cheatsheet_service.delete_cheatsheet(db, slug)
+    audit_service.log(db, admin_email=admin_email, action="DELETE",
+                      resource_type="cheatsheet", resource_id=slug)
+    return result

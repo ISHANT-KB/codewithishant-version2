@@ -1,12 +1,13 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import List
 
 from app.db.session import get_db
 from app.schemas.blog import BlogCreate, BlogUpdate, BlogResponse, BlogListResponse
 from app.services import blog as blog_service
-from app.api.deps import get_current_admin, require_csrf
+from app.services import audit as audit_service
+from app.api.deps import get_current_admin, require_csrf, get_admin_email
 from app.core.sanitize import sanitize_markdown, sanitize_plain
 
 router = APIRouter(prefix="/blogs", tags=["Blogs"])
@@ -46,7 +47,6 @@ def list_all_blogs(
     db: Session = Depends(get_db),
     _admin=Depends(get_current_admin),
 ):
-    """Returns all blogs including drafts."""
     return blog_service.get_all_blogs(db, published_only=False)
 
 
@@ -55,8 +55,13 @@ def create_blog(
     payload: BlogCreate,
     db: Session = Depends(get_db),
     _admin=Depends(get_current_admin),
+    admin_email: str = Depends(get_admin_email),
 ):
-    return blog_service.create_blog(db, _sanitize_create(payload))
+    blog = blog_service.create_blog(db, _sanitize_create(payload))
+    audit_service.log(db, admin_email=admin_email, action="CREATE",
+                      resource_type="blog", resource_id=str(blog.id),
+                      detail=blog.title)
+    return blog
 
 
 @router.put("/{blog_id}", response_model=BlogResponse, dependencies=[Depends(require_csrf)])
@@ -65,8 +70,12 @@ def update_blog(
     payload: BlogUpdate,
     db: Session = Depends(get_db),
     _admin=Depends(get_current_admin),
+    admin_email: str = Depends(get_admin_email),
 ):
-    return blog_service.update_blog(db, blog_id, _sanitize_update(payload))
+    blog = blog_service.update_blog(db, blog_id, _sanitize_update(payload))
+    audit_service.log(db, admin_email=admin_email, action="UPDATE",
+                      resource_type="blog", resource_id=str(blog_id))
+    return blog
 
 
 @router.delete("/{blog_id}", dependencies=[Depends(require_csrf)])
@@ -74,5 +83,9 @@ def delete_blog(
     blog_id: UUID,
     db: Session = Depends(get_db),
     _admin=Depends(get_current_admin),
+    admin_email: str = Depends(get_admin_email),
 ):
-    return blog_service.delete_blog(db, blog_id)
+    result = blog_service.delete_blog(db, blog_id)
+    audit_service.log(db, admin_email=admin_email, action="DELETE",
+                      resource_type="blog", resource_id=str(blog_id))
+    return result

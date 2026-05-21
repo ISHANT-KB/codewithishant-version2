@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, Cookie, Header
+from fastapi import Depends, HTTPException, Cookie, Header, Request
 from jose import JWTError
 from app.core.jwt import decode_token
 from app.core.csrf import verify_csrf_token
@@ -44,3 +44,9 @@ def require_csrf(
         raise HTTPException(status_code=403, detail="CSRF token missing")
     if not verify_csrf_token(csrf_cookie, x_csrf_token):
         raise HTTPException(status_code=403, detail="CSRF token invalid")
+
+
+# ── extract admin email from token payload ────────────────────────────────────
+
+def get_admin_email(payload: dict = Depends(get_current_admin)) -> str:
+    return payload.get("sub", "unknown")
