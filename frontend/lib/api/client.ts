@@ -20,11 +20,12 @@ function getErrorMessage(error: unknown): string {
   if (hasStringDetail(error)) {
     return error.detail;
   }
-
   return "Request failed";
 }
 
+// Only runs in browser — SSR has no document
 function getCsrfToken(): string | null {
+  if (typeof document === "undefined") return null;
   return (
     document.cookie
       .split("; ")
@@ -33,11 +34,14 @@ function getCsrfToken(): string | null {
   );
 }
 
+const MUTATING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+
 async function fetchWithAuth(
   input: RequestInfo,
   init: RequestInit = {},
 ): Promise<Response> {
-  const csrfToken = getCsrfToken();
+  const method = (init.method ?? "GET").toUpperCase();
+  const csrfToken = MUTATING.has(method) ? getCsrfToken() : null;
 
   const headers: Record<string, string> = {
     ...(init.headers as Record<string, string>),
@@ -51,19 +55,15 @@ async function fetchWithAuth(
     const refreshed = await refreshToken();
     if (refreshed) {
       // re-read — refresh endpoint issues a new csrf_token cookie
-      const newCsrf = getCsrfToken();
+      const newCsrf = MUTATING.has(method) ? getCsrfToken() : null;
       const retryHeaders: Record<string, string> = {
         ...(init.headers as Record<string, string>),
         ...(newCsrf ? { "x-csrf-token": newCsrf } : {}),
       };
-      return fetch(input, {
-        ...init,
-        headers: retryHeaders,
-        credentials: "include",
-      });
+      return fetch(input, { ...init, headers: retryHeaders, credentials: "include" });
     }
     // refresh failed → redirect to login
-    window.location.href = "/admin/login";
+    if (typeof window !== "undefined") window.location.href = "/admin/login";
   }
 
   return res;
