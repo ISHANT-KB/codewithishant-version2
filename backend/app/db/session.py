@@ -3,10 +3,9 @@ from collections.abc import Generator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
-from ..config import DATABASE_URL
+from ..config import settings
 
-assert DATABASE_URL is not None, "DATABASE_URL must be set"
-engine = create_engine(DATABASE_URL)
+engine = create_engine(settings.DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 

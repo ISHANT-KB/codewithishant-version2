@@ -34,3 +34,10 @@ def decode_refresh_token(token: str) -> dict:
     if payload.get("type") != "refresh":
         raise JWTError("Not a refresh token")
     return payload
+
+
+def decode_access_token(token: str) -> dict:
+    payload = decode_token(token)
+    if payload.get("type") != "access":
+        raise JWTError("Not an access token")
+    return payload

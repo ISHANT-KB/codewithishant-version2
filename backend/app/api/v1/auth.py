@@ -1,33 +1,34 @@
 import uuid
-from fastapi import APIRouter, HTTPException, Depends, Response, Cookie
+from fastapi import APIRouter, HTTPException, Depends, Response, Cookie, Request
 from sqlalchemy.orm import Session
 from jose import JWTError
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.db.session import get_db
 from app.models.admin import Admin
 from app.models.token_blacklist import TokenBlacklist
 from app.core.security import verify_password
-from app.core.jwt import create_access_token, create_refresh_token, decode_refresh_token
+from app.core.jwt import (
+    create_access_token,
+    create_refresh_token,
+    decode_access_token,
+    decode_refresh_token,
+)
 from app.schemas.admin import AdminLogin
 from app.config import settings
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
-COOKIE_OPTS = dict(
-    httponly=True,
-    secure=settings.COOKIE_SECURE,
-    samesite=settings.COOKIE_SAMESITE,
-    path="/",
-)
-
-
-# ── login ─────────────────────────────────────────────────────────────────────
+# ── login — 5 attempts/minute per IP ─────────────────────────────────────────
 
 @router.post("/admin-login")
-def admin_login(data: AdminLogin, response: Response, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def admin_login(request: Request, data: AdminLogin, response: Response, db: Session = Depends(get_db)):
     admin = db.query(Admin).filter(Admin.email == data.email).first()
 
-    # same error for both cases → no user enumeration
+    # same error both cases → no user enumeration
     if not admin or not verify_password(data.password, str(admin.password)):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
@@ -38,16 +39,34 @@ def admin_login(data: AdminLogin, response: Response, db: Session = Depends(get_
     access_token  = create_access_token({"sub": admin.email, "role": "admin", "jti": jti})
     refresh_token = create_refresh_token({"sub": admin.email, "role": "admin"})
 
-    response.set_cookie(key="access_token",  value=access_token,  max_age=15 * 60, **COOKIE_OPTS)
-    response.set_cookie(key="refresh_token", value=refresh_token, max_age=7 * 24 * 3600, **COOKIE_OPTS)
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        max_age=15 * 60,
+        httponly=True,
+        secure=settings.COOKIE_SECURE,
+        samesite=settings.COOKIE_SAMESITE,
+        path="/",
+    )
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        max_age=7 * 24 * 3600,
+        httponly=True,
+        secure=settings.COOKIE_SECURE,
+        samesite=settings.COOKIE_SAMESITE,
+        path="/",
+    )
 
     return {"message": "Login successful"}   # NO token in body
 
 
-# ── refresh ───────────────────────────────────────────────────────────────────
+# ── refresh — 20/minute ───────────────────────────────────────────────────────
 
 @router.post("/refresh")
+@limiter.limit("20/minute")
 def refresh(
+    request: Request,
     response: Response,
     refresh_token: str | None = Cookie(default=None),
     db: Session = Depends(get_db),
@@ -64,7 +83,15 @@ def refresh(
     new_access = create_access_token({
         "sub": payload["sub"], "role": payload["role"], "jti": jti
     })
-    response.set_cookie(key="access_token", value=new_access, max_age=15 * 60, **COOKIE_OPTS)
+    response.set_cookie(
+        key="access_token",
+        value=new_access,
+        max_age=15 * 60,
+        httponly=True,
+        secure=settings.COOKIE_SECURE,
+        samesite=settings.COOKIE_SAMESITE,
+        path="/",
+    )
     return {"message": "Token refreshed"}
 
 
@@ -78,7 +105,7 @@ def logout(
 ):
     if access_token:
         try:
-            payload = decode_refresh_token.__wrapped__(access_token)  # raw decode
+            payload = decode_access_token(access_token)
             jti = payload.get("jti")
             if jti:
                 db.add(TokenBlacklist(jti=jti))
