@@ -46,6 +46,14 @@ const adminSections = [
     statKey: null,
     cta: "Open blogs",
   },
+  {
+  href: "/admin/audit",
+  name: "Audit Log",
+  eyebrow: "Security",
+  description: "View all admin actions — who created, updated or deleted what.",
+  statKey: null,
+  cta: "View logs",
+},
 ];
 
 export default function AdminDashboardPage() {

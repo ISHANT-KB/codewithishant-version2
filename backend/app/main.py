@@ -2,13 +2,14 @@ from datetime import datetime, timezone, timedelta
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from app.api.v1 import auth, note, topic, cheatsheet, blog
+from app.api.v1 import auth, note, topic, cheatsheet, blog, audit
 from app.db.session import Base, engine, SessionLocal
 from app.models.token_blacklist import TokenBlacklist
 from app.config import settings
@@ -30,6 +31,22 @@ def rate_limit_exception_handler(request: Request, exc: Exception) -> Response:
 
 app.add_exception_handler(RateLimitExceeded, rate_limit_exception_handler)
 app.add_middleware(SlowAPIMiddleware)
+
+# ── request size limit ────────────────────────────────────────────────────────
+MAX_UPLOAD_SIZE = 2 * 1024 * 1024  # 2 MB
+
+class LimitRequestSizeMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        content_length = request.headers.get("content-length")
+        if content_length and int(content_length) > MAX_UPLOAD_SIZE:
+            return Response(
+                content='{"detail": "Request body too large. Max 2MB."}',
+                status_code=413,
+                media_type="application/json",
+            )
+        return await call_next(request)
+
+app.add_middleware(LimitRequestSizeMiddleware)
 
 # ── CORS — strict, no wildcard ────────────────────────────────────────────────
 ALLOWED_ORIGINS = [
@@ -54,6 +71,7 @@ app.include_router(note.router)
 app.include_router(cheatsheet.router)
 app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
 app.include_router(blog.router, prefix="/api", tags=["Blogs"])
+app.include_router(audit.router, prefix="/api", tags=["Audit"])
 
 
 # ── blacklist cron ────────────────────────────────────────────────────────────

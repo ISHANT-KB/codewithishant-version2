@@ -1,0 +1,5 @@
+Contact: mailto:codewithishant.work@gmail.com
+Expires: 2026-12-31T23:59:59Z
+Preferred-Languages: en
+Canonical: https://codewithishant.com/.well-known/security.txt
+Policy: https://codewithishant.com/security-policy
