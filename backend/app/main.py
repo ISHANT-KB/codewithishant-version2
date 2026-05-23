@@ -1,4 +1,4 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,7 +16,20 @@ from app.config import settings
 from app import models
 
 # ── rate limiter ──────────────────────────────────────────────────────────────
-limiter = Limiter(key_func=get_remote_address, default_limits=["200/minute"])
+# Redis backend in prod (REDIS_URL set), in-memory fallback for local dev.
+if settings.REDIS_URL:
+    limiter = Limiter(
+        key_func=get_remote_address,
+        default_limits=["200/minute"],
+        storage_uri=settings.REDIS_URL,
+    )
+    print("[rate-limit] Redis backend active")
+else:
+    limiter = Limiter(
+        key_func=get_remote_address,
+        default_limits=["200/minute"],
+    )
+    print("[rate-limit] In-memory backend (dev)")
 
 app = FastAPI()
 
@@ -35,6 +48,7 @@ app.add_middleware(SlowAPIMiddleware)
 # ── request size limit ────────────────────────────────────────────────────────
 MAX_UPLOAD_SIZE = 2 * 1024 * 1024  # 2 MB
 
+
 class LimitRequestSizeMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         content_length = request.headers.get("content-length")
@@ -45,6 +59,7 @@ class LimitRequestSizeMiddleware(BaseHTTPMiddleware):
                 media_type="application/json",
             )
         return await call_next(request)
+
 
 app.add_middleware(LimitRequestSizeMiddleware)
 

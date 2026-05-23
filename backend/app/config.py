@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     COOKIE_SECURE: bool = True               # False only in local dev
     COOKIE_SAMESITE: Literal["lax", "strict", "none"] = "lax"
 
+    # Redis — optional. If set, slowapi uses Redis backend (prod).
+    # If unset, falls back to in-memory (local dev).
+    REDIS_URL: str | None = None
+
     model_config = SettingsConfigDict(
         env_file=str(ENV_FILE),
         env_file_encoding="utf-8",

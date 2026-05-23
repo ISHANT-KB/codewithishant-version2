@@ -1,25 +1,41 @@
-# editor / OS
+# ── editor / OS ───────────────────────────────────────────────────────────────
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+desktop.ini
+*~
 
-# env files
+# ── env files ─────────────────────────────────────────────────────────────────
 .env
 .env.*
 !.env.example
 !.env.*.example
 
-# logs
+# ── logs ──────────────────────────────────────────────────────────────────────
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+logs/
+*.log.*
 
-# Python
+# ── secrets / sensitive ───────────────────────────────────────────────────────
+*.pem
+*.key
+*.p12
+*.pfx
+*.cert
+*.crt
+*.csr
+secrets/
+.secrets/
+
+# ── Python ────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
+*.pyo
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -29,8 +45,12 @@ htmlcov/
 .venv/
 venv/
 env/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
 
-# Node / Next.js
+# ── Node / Next.js ────────────────────────────────────────────────────────────
 node_modules/
 .next/
 out/
@@ -39,6 +59,36 @@ coverage/
 *.tsbuildinfo
 .turbo/
 .vercel/
+.yarn/
+.pnp.*
+*.tgz
 
-#vscodeCOunter
+# ── database ──────────────────────────────────────────────────────────────────
+*.sqlite
+*.sqlite3
+*.db
+
+# ── uploads / media (user-generated content) ─────────────────────────────────
+uploads/
+media/
+
+# ── alembic ───────────────────────────────────────────────────────────────────
+# keep migrations, ignore compiled/cache only
+backend/alembic/__pycache__/
+
+# ── infra / deployment ────────────────────────────────────────────────────────
+# keep infra/ folder in repo — nginx configs are intentional
+# ignore terraform state + sensitive infra files
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+!*.tfvars.example
+
+# ── misc tooling ──────────────────────────────────────────────────────────────
 .VSCodeCounter/
+instruction-for-hosting.txt
+.hypothesis/
+.cache/
+tmp/
+temp/
