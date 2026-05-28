@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getBlog } from "@/lib/api/blogs";
 import MarkdownRenderer from "@/components/common/MarkdownRenderer";
 import Link from "next/link";
@@ -5,6 +6,38 @@ import { notFound } from "next/navigation";
 
 interface Props {
   params: { slug: string };
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  try {
+    const blog = await getBlog(params.slug);
+    const description = blog.excerpt ?? blog.content.slice(0, 155).replace(/[#*`]/g, "").trim();
+    const url = `https://codewithishant.com/blogs/${params.slug}`;
+
+    return {
+      title: blog.title,
+      description,
+      alternates: { canonical: url },
+      openGraph: {
+        type: "article",
+        url,
+        title: blog.title,
+        description,
+        publishedTime: blog.created_at,
+        authors: ["Ishant"],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: blog.title,
+        description,
+      },
+    };
+  } catch {
+    return {
+      title: "Post not found",
+      robots: { index: false, follow: false },
+    };
+  }
 }
 
 export default async function BlogDetailPage({ params }: Props) {
@@ -43,6 +76,35 @@ export default async function BlogDetailPage({ params }: Props) {
           </p>
         )}
       </header>
+
+      {/* JSON-LD structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            headline: blog.title,
+            description: blog.excerpt ?? "",
+            datePublished: blog.created_at,
+            author: {
+              "@type": "Person",
+              name: "Ishant",
+              url: "https://codewithishant.com",
+            },
+            publisher: {
+              "@type": "Person",
+              name: "Ishant",
+              url: "https://codewithishant.com",
+            },
+            url: `https://codewithishant.com/blogs/${blog.slug}`,
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": `https://codewithishant.com/blogs/${blog.slug}`,
+            },
+          }),
+        }}
+      />
 
       {/* Content */}
       <article className="mx-auto max-w-3xl px-6 py-14 sm:px-10 md:px-16">
