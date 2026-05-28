@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend (Next.js)
 
-## Getting Started
+Next.js App Router frontend for **CodeWithIshant v2**.
 
-First, run the development server:
+- Public site: Topics, Notes, Blogs, Cheatsheets
+- Admin UI: login + content management screens (JWT protected)
+
+---
+
+## Prerequisites
+
+- Node.js 20+
+- npm
+
+---
+
+## Setup
+
+From `frontend/`:
+
+```bash
+npm install
+```
+
+### Environment variables
+
+Create `frontend/.env.local` (used by Next.js build/runtime):
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+---
+
+## Run locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `http://localhost:3000`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Admin Login
 
-To learn more about Next.js, take a look at the following resources:
+Admin login uses the backend JWT auth.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+After login, API calls from admin screens include the access token in the `Authorization` header.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Admin UI routes are under:
 
-## Deploy on Vercel
+- `frontend/app/(admin)/...`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Key Frontend Files
+
+- `frontend/app/layout.tsx` — root layout
+- `frontend/middleware.ts` — route protection / redirects
+- `frontend/lib/api/` — typed API client utilities (notes, topics, auth, etc.)
+- `frontend/app/(public)/...` — public pages
+- `frontend/app/(admin)/...` — admin pages
+
+---
+
+## Notes / Caveats
+
+- Some admin pages may reference backend URLs directly if not using shared env helpers. Prefer `NEXT_PUBLIC_API_URL`.
+

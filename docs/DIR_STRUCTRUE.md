@@ -1,10 +1,19 @@
 Directory structure:
 └── ishant-kb-codewithishant-version2/
     ├── implementation_plan.md
-    ├── package.json
     ├── backend/
     │   ├── README.md
+    │   ├── alembic.ini
     │   ├── requirements.txt
+    │   ├── alembic/
+    │   │   ├── README
+    │   │   ├── env.py
+    │   │   ├── script.py.mako
+    │   │   └── versions/
+    │   │       ├── 0ceb7de08226_add_token_blacklist.py
+    │   │       ├── 4de2d858aa56_add_blogs_table.py
+    │   │       ├── 642040635d04_add_audit_logs_table.py
+    │   │       └── c168e50afc45_add_expires_at_to_token_blacklist.py
     │   └── app/
     │       ├── config.py
     │       ├── main.py
@@ -13,12 +22,16 @@ Directory structure:
     │       │   ├── deps.py
     │       │   └── v1/
     │       │       ├── __init__.py
+    │       │       ├── audit.py
     │       │       ├── auth.py
+    │       │       ├── blog.py
     │       │       ├── cheatsheet.py
     │       │       ├── note.py
     │       │       └── topic.py
     │       ├── core/
+    │       │   ├── csrf.py
     │       │   ├── jwt.py
+    │       │   ├── sanitize.py
     │       │   ├── security.py
     │       │   └── utils.py
     │       ├── db/
@@ -28,17 +41,23 @@ Directory structure:
     │       ├── models/
     │       │   ├── __init__.py
     │       │   ├── admin.py
+    │       │   ├── audit_log.py
+    │       │   ├── blog.py
     │       │   ├── cheatsheet.py
     │       │   ├── note.py
+    │       │   ├── token_blacklist.py
     │       │   └── topic.py
     │       ├── schemas/
     │       │   ├── admin.py
+    │       │   ├── blog.py
     │       │   ├── cheatsheet.py
     │       │   ├── note.py
     │       │   ├── topic.py
     │       │   └── topic_full.py
     │       └── services/
     │           ├── __init__.py
+    │           ├── audit.py
+    │           ├── blog.py
     │           ├── cheatsheet.py
     │           ├── note.py
     │           └── topic.py
@@ -55,6 +74,7 @@ Directory structure:
     │   ├── README.md
     │   ├── components.json
     │   ├── eslint.config.mjs
+    │   ├── middleware.ts
     │   ├── next.config.ts
     │   ├── package.json
     │   ├── postcss.config.mjs
@@ -63,10 +83,14 @@ Directory structure:
     │   ├── app/
     │   │   ├── globals.css
     │   │   ├── layout.tsx
+    │   │   ├── robots.ts
+    │   │   ├── sitemap.ts
     │   │   ├── (admin)/
     │   │   │   ├── layout.tsx
     │   │   │   └── admin/
     │   │   │       ├── page.tsx
+    │   │   │       ├── audit/
+    │   │   │       │   └── page.tsx
     │   │   │       ├── blogs/
     │   │   │       │   └── page.tsx
     │   │   │       ├── cheatsheet/
@@ -80,6 +104,10 @@ Directory structure:
     │   │   ├── (public)/
     │   │   │   ├── layout.tsx
     │   │   │   ├── page.tsx
+    │   │   │   ├── blogs/
+    │   │   │   │   ├── page.tsx
+    │   │   │   │   └── [slug]/
+    │   │   │   │       └── page.tsx
     │   │   │   ├── cheatsheets/
     │   │   │   │   ├── page.tsx
     │   │   │   │   └── [slug]/
@@ -90,6 +118,8 @@ Directory structure:
     │   │   │   │   │   └── page.tsx
     │   │   │   │   └── test/
     │   │   │   │       └── page.tsx
+    │   │   │   ├── security-policy/
+    │   │   │   │   └── page.tsx
     │   │   │   └── topics/
     │   │   │       ├── layout.tsx
     │   │   │       ├── page.tsx
@@ -129,6 +159,8 @@ Directory structure:
     │   │   │   ├── BrandMark.tsx
     │   │   │   └── MarkdownRenderer.tsx
     │   │   ├── features/
+    │   │   │   ├── blogs/
+    │   │   │   │   └── BlogCard.tsx
     │   │   │   ├── cheatsheets/
     │   │   │   │   └── CheatsheetCard.tsx
     │   │   │   ├── notes/
@@ -162,6 +194,7 @@ Directory structure:
     │   ├── constants/
     │   │   └── index.ts
     │   ├── hooks/
+    │   │   ├── useIdleTimeout.ts
     │   │   ├── useInViewOnce.ts
     │   │   └── useMouseParallax.ts
     │   ├── lib/
@@ -169,22 +202,34 @@ Directory structure:
     │   │   ├── utils.ts
     │   │   └── api/
     │   │       ├── auth.ts
+    │   │       ├── blogs.ts
     │   │       ├── cheatsheets.ts
     │   │       ├── client.ts
     │   │       ├── index.ts
     │   │       ├── notes.ts
     │   │       └── topics.ts
+    │   ├── public/
+    │   │   └── .well-known/
+    │   │       └── security.txt
     │   ├── store/
     │   │   ├── auth.ts
     │   │   └── ui.ts
     │   └── types/
+    │       ├── blog.ts
     │       ├── cheatsheet.ts
     │       ├── note.ts
     │       └── topic.ts
+    ├── infra/
+    │   └── nginx/
+    │       └── codewithishant.com.nginx.conf
     ├── scripts/
     │   ├── check_notes.py
     │   ├── create_admin.py
     │   └── test_api.py
+    ├── .github/
+    │   └── workflows/
+    │       ├── dep-scan.yml
+    │       └── secrets-scan.yml
     └── .VSCodeCounter/
         └── 2026-05-11_18-53-23/
             ├── details.md
